@@ -3,6 +3,7 @@
     <div v-if="!mobileSize" class="app flex">
       <Navigation></Navigation>
       <div class="app-content flex flex-column">
+        <InvoiceModal />
         <router-view />
       </div>
     </div>
@@ -14,10 +15,12 @@
 </template>
 
 <script>
+import InvoiceModal from "./components/InvoiceModal.vue";
 import Navigation from "./components/Navigation.vue";
 export default {
   components: {
     Navigation,
+    InvoiceModal,
   },
   data() {
     return {
@@ -49,7 +52,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
-  background-color: #141625;
+  // background-color: #141625;
 }
 
 button,
