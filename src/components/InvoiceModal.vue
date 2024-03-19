@@ -114,6 +114,8 @@
         <div class="input flex flex-column">
           <label for="paymentTerms">Payment Terms</label>
           <select required type="text" id="paymentTerms" v-model="paymentTerms">
+            <option value="7">7 Days</option>
+            <option value="15">15 Days</option>
             <option value="30">30 Days</option>
             <option value="60">60 Days</option>
           </select>
@@ -154,6 +156,7 @@
                 ${{ (item.total = item.qty * item.price) }}
               </td>
               <img
+                style="cursor: pointer;"
                 @click="deleteInvoiceItem(item.id)"
                 src="../assets/icon-delete.svg"
                 alt=""
@@ -183,6 +186,7 @@
 
 <script>
 import { mapMutations } from "vuex";
+import { uid } from "uid";
 
 export default {
   name: "InvoiceModal",
@@ -213,10 +217,43 @@ export default {
       invoiceTotal: 0,
     };
   },
+  created() {
+    this.invoiceDateUnix = Date.now();
+    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+      "en-us",
+      this.dateOptions
+    );
+  },
   methods: {
     ...mapMutations(["TOGGLE_INVOICE"]),
     closeInvoice() {
       this.TOGGLE_INVOICE();
+    },
+    addNewInvoiceItem() {
+      this.invoiceItemList.push({
+        id: uid(),
+        itemName: "",
+        qty: 0,
+        price: 0,
+        total: 0,
+      });
+    },
+    deleteInvoiceItem(id) {
+      this.invoiceItemList = this.invoiceItemList.filter(
+        (item) => item.id !== id
+      );
+    },
+  },
+  watch: {
+    paymentTerms() {
+      const futureDate = new Date();
+
+      this.paymentDueDateUnix = futureDate.setDate(
+        futureDate.getDate() + parseInt(this.paymentTerms)
+      );
+      this.paymentDueDate = new Date(
+        this.paymentDueDateUnix
+      ).toLocaleDateString("en-us", this.dateOptions);
     },
   },
 };

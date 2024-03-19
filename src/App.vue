@@ -3,7 +3,10 @@
     <div v-if="!mobileSize" class="app flex">
       <Navigation></Navigation>
       <div class="app-content flex flex-column">
-        <InvoiceModal v-if="toggleInvoice" />
+        <transition name="invoice"
+          ><InvoiceModal v-if="toggleInvoice"
+        /></transition>
+
         <router-view />
       </div>
     </div>
@@ -57,6 +60,17 @@ export default {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
   // background-color: #141625;
+}
+// animated invoice
+
+.invoice-enter-active,
+.invoice-leave-active {
+  transition: 0.8s ease all;
+}
+
+.invoice-enter-from,
+.invoice-leave-to {
+  transform: translateX(-700px);
 }
 
 button,
