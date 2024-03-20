@@ -173,7 +173,9 @@
       <!-- Save/Exit  -->
       <div class="save flex">
         <div class="left">
-          <button @click="closeInvoice" class="red button">Discard</button>
+          <button type="button" @click="closeInvoice" class="red button">
+            Discard
+          </button>
         </div>
         <div class="right flex">
           <button type="submit" @click="saveDraft" class="dark-purple">
@@ -196,11 +198,11 @@ import { uid } from "uid";
 
 export default {
   name: "InvoiceModal",
+  components: {},
   data() {
     return {
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
       docId: null,
-      loading: null,
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -231,9 +233,14 @@ export default {
     );
   },
   methods: {
-    ...mapMutations(["TOGGLE_INVOICE"]),
+    ...mapMutations(["TOGGLE_INVOICE", "LOADING", "MODAL_TOGGLE"]),
     closeInvoice() {
       this.TOGGLE_INVOICE();
+    },
+    checkClick(e) {
+      if (e.target === this.$refs.invoiceWrap) {
+        this.MODAL_TOGGLE();
+      }
     },
     addNewInvoiceItem() {
       this.invoiceItemList.push({
@@ -266,33 +273,9 @@ export default {
         alert("Please add some item");
         return;
       }
+      this.LOADING();
+      // console.log("First", this.$store.state.loading);
       this.calInvoiceTotal();
-
-      // const database = db.collection("invoices").doc();
-      // await database.set({
-      //   invoiceId: uid(6),
-      //   billerStreetAddress: this.billerStreetAddress,
-      //   billerCity: this.billerCity,
-      //   billerZipCode: this.billerZipCode,
-      //   billerCountry: this.billerCountry,
-      //   clientName: this.clientName,
-      //   clientEmail: this.clientEmail,
-      //   clientStreetAddress: this.clientStreetAddress,
-      //   clientCity: this.clientCity,
-      //   clientZipCode: this.clientZipCode,
-      //   clientCountry: this.clientCountry,
-      //   invoiceDate: this.invoiceDate,
-      //   invoiceDateUnix: this.invoiceDateUnix,
-      //   paymentTerms: this.paymentTerms,
-      //   paymentDueDate: this.paymentDueDate,
-      //   paymentDueDateUnix: this.paymentDueDateUnix,
-      //   productDescription: this.productDescription,
-      //   invoiceItemList: this.invoiceItemList,
-      //   invoiceTotal: this.invoiceTotal,
-      //   invoicePending: this.invoicePending,
-      //   invoiceDraft: this.invoiceDraft,
-      //   invoicePaid: null,
-      // });
       await addDoc(collection(db, "invoices"), {
         invoiceId: uid(6),
         billerStreetAddress: this.billerStreetAddress,
@@ -317,6 +300,7 @@ export default {
         invoiceDraft: this.invoiceDraft,
         invoicePaid: null,
       });
+      this.LOADING();
       this.TOGGLE_INVOICE();
     },
 

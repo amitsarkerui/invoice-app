@@ -1,4 +1,5 @@
 <template>
+  <Loading v-show="loading" />
   <div class="home container">
     <div class="header flex">
       <div class="left flex flex-column">
@@ -30,16 +31,18 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
+import Loading from "../components/Loading.vue";
 
 export default {
   name: "Home",
-  components: {},
+  components: { Loading },
   data() {
     return {
       filterMenu: false,
     };
   },
+  computed: { ...mapState(["loading"]) },
   methods: {
     ...mapMutations(["TOGGLE_INVOICE"]),
     toggleFilterMenu() {
@@ -50,6 +53,7 @@ export default {
       this.TOGGLE_INVOICE();
     },
   },
+  watch: {},
 };
 </script>
 

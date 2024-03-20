@@ -3,10 +3,10 @@
     <div v-if="!mobileSize" class="app flex">
       <Navigation></Navigation>
       <div class="app-content flex flex-column">
+        <Modal v-show="modalActive"></Modal>
         <transition name="invoice"
           ><InvoiceModal v-if="toggleInvoice"
         /></transition>
-
         <router-view />
       </div>
     </div>
@@ -21,10 +21,12 @@
 import InvoiceModal from "./components/InvoiceModal.vue";
 import Navigation from "./components/Navigation.vue";
 import { mapState } from "vuex";
+import Modal from "./components/Modal.vue";
 export default {
   components: {
     Navigation,
     InvoiceModal,
+    Modal,
   },
   data() {
     return {
@@ -36,7 +38,7 @@ export default {
     window.addEventListener("resize", this.checkMobile);
   },
   computed: {
-    ...mapState(["toggleInvoice"]),
+    ...mapState(["toggleInvoice", "modalActive"]),
   },
   methods: {
     checkMobile() {
