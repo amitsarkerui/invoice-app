@@ -7,7 +7,7 @@ src/firebase
 # local env files
 .env.local
 .env.*.local
-
+firebaseInit.js
 
 # Log files
 npm-debug.log*
