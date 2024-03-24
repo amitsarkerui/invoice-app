@@ -68,9 +68,7 @@ export default {
       this.TOGGLE_INVOICE();
     },
   },
-  watch: {
-    invoicesData() {},
-  },
+  watch: {},
 };
 </script>
 

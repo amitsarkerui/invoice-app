@@ -115,7 +115,7 @@
         </div>
         <div class="input flex flex-column">
           <label for="paymentTerms">Payment Terms</label>
-          <select required type="text" id="paymentTerms" v-model="paymentTerms">
+          <select required id="paymentTerms" v-model="paymentTerms">
             <option value="7">7 Days</option>
             <option value="15">15 Days</option>
             <option value="30">30 Days</option>

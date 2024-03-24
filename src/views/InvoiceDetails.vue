@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   name: "InvoiceDetails",
   data() {
@@ -122,6 +122,7 @@ export default {
       "TOGGLE_EDIT_INVOICE",
       "TOGGLE_INVOICE",
     ]),
+    ...mapActions(["DELETE_INVOICE_DB"]),
     getCurrentInvoice() {
       this.SET_CURRENT_INVOICE(this.$route.params.invoiceId);
       this.currentInvoice = this.currentInvoiceArray[0];
@@ -130,9 +131,20 @@ export default {
       this.TOGGLE_EDIT_INVOICE();
       this.TOGGLE_INVOICE();
     },
+    async deleteInvoice(docId) {
+      await this.DELETE_INVOICE_DB(docId);
+      this.$router.push({ name: "Home" });
+    },
   },
   computed: {
-    ...mapState(["currentInvoiceArray"]),
+    ...mapState(["currentInvoiceArray", "editInvoice"]),
+  },
+  watch: {
+    editInvoice() {
+      if (!this.editInvoice) {
+        this.currentInvoice = this.currentInvoiceArray[0];
+      }
+    },
   },
 };
 </script>
