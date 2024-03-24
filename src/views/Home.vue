@@ -5,19 +5,17 @@
     <div class="header flex">
       <div class="left flex flex-column">
         <h1>Invoices</h1>
-        <p>
-          There are 4 Invoice in total
-        </p>
+        <p>There are {{ invoicesData.length }} Invoice in total</p>
       </div>
       <div class="flex right">
         <div @click="toggleFilterMenu" class="filter flex">
           <span>Filter by status</span>
           <img src="../assets/icon-arrow-down.svg" alt="" />
           <ul v-show="filterMenu" class="filter-menu">
-            <li>Draft</li>
-            <li>Pending</li>
-            <li>Paid</li>
-            <li>Clear Filter</li>
+            <li @click="filteredInvoices">Draft</li>
+            <li @click="filteredInvoices">Pending</li>
+            <li @click="filteredInvoices">Paid</li>
+            <li @click="filteredInvoices">Clear Filter</li>
           </ul>
         </div>
         <div @click="newInvoice" class="button flex">
@@ -31,7 +29,7 @@
     <!-- Invoices -->
     <div v-if="invoicesData.length > 0">
       <Invoice
-        v-for="(invoice, index) in invoicesData"
+        v-for="(invoice, index) in filteredData"
         :key="index"
         :invoice="invoice"
       />
@@ -55,9 +53,26 @@ export default {
   data() {
     return {
       filterMenu: false,
+      filteredInvoice: null,
     };
   },
-  computed: { ...mapState(["loading", "invoicesData"]) },
+  computed: {
+    ...mapState(["loading", "invoicesData"]),
+    filteredData() {
+      return this.invoicesData.filter((invoice) => {
+        if (this.filteredInvoice === "Draft") {
+          return invoice.invoiceDraft === true;
+        }
+        if (this.filteredInvoice === "Pending") {
+          return invoice.invoicePending === true;
+        }
+        if (this.filteredInvoice === "Paid") {
+          return invoice.invoicePaid === true;
+        }
+        return invoice;
+      });
+    },
+  },
   methods: {
     ...mapMutations(["TOGGLE_INVOICE"]),
     toggleFilterMenu() {
@@ -66,6 +81,13 @@ export default {
 
     newInvoice() {
       this.TOGGLE_INVOICE();
+    },
+    filteredInvoices(e) {
+      if (e.target.innerText === "Clear Filter") {
+        this.filteredInvoice = null;
+        return;
+      }
+      this.filteredInvoice = e.target.innerText;
     },
   },
   watch: {},

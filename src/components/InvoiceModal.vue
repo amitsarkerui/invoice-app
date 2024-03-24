@@ -280,7 +280,7 @@ export default {
       "MODAL_TOGGLE",
       "TOGGLE_EDIT_INVOICE",
     ]),
-    ...mapActions(["UPDATE_INVOICE"]),
+    ...mapActions(["UPDATE_INVOICE", "GET_INVOICES"]),
     closeInvoice() {
       this.TOGGLE_INVOICE();
       this.TOGGLE_EDIT_INVOICE();
@@ -350,6 +350,7 @@ export default {
       });
       this.LOADING();
       this.TOGGLE_INVOICE();
+      this.GET_INVOICES();
     },
     async updateInvoice() {
       if (this.invoiceItemList.length <= 0) {
