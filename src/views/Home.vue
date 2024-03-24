@@ -1,5 +1,6 @@
 <template>
   <Loading v-show="loading" />
+  <!-- Header -->
   <div class="home container">
     <div class="header flex">
       <div class="left flex flex-column">
@@ -27,22 +28,36 @@
         </div>
       </div>
     </div>
+    <!-- Invoices -->
+    <div v-if="invoicesData.length > 0">
+      <Invoice
+        v-for="(invoice, index) in invoicesData"
+        :key="index"
+        :invoice="invoice"
+      />
+    </div>
+    <div v-else class="empty flex flex-column">
+      <img src="../assets/illustration-empty.svg" alt="" />
+      <h3>There are no invoice right now</h3>
+      <p>Please create some invoice if needed</p>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import Invoice from "../components/Invoice.vue";
 import Loading from "../components/Loading.vue";
 
 export default {
   name: "Home",
-  components: { Loading },
+  components: { Loading, Invoice },
   data() {
     return {
       filterMenu: false,
     };
   },
-  computed: { ...mapState(["loading"]) },
+  computed: { ...mapState(["loading", "invoicesData"]) },
   methods: {
     ...mapMutations(["TOGGLE_INVOICE"]),
     toggleFilterMenu() {
@@ -53,7 +68,9 @@ export default {
       this.TOGGLE_INVOICE();
     },
   },
-  watch: {},
+  watch: {
+    invoicesData() {},
+  },
 };
 </script>
 
@@ -141,7 +158,7 @@ export default {
   }
 
   .empty {
-    margin-top: 160px;
+    margin-top: 60px;
     align-items: center;
 
     img {
@@ -151,7 +168,7 @@ export default {
 
     h3 {
       font-size: 20px;
-      margin-top: 40px;
+      margin-top: 15px;
     }
 
     p {
