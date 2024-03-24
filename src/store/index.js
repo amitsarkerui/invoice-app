@@ -1,7 +1,13 @@
 import { createStore } from "vuex";
 import db from "../firebase/firebaseInit";
 // import { collection } from "firebase/firestore";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 export default createStore({
   state: {
@@ -42,6 +48,23 @@ export default createStore({
       state.invoicesData = state.invoicesData.filter(
         (invoice) => invoice.docId !== payload
       );
+    },
+    UPDATE_STATUS_TO_PAID(state, payload) {
+      this.state.invoicesData.map((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = true;
+          invoice.invoicePending = false;
+        }
+      });
+    },
+    UPDATE_STATUS_TO_PENDING(state, payload) {
+      this.state.invoicesData.map((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = false;
+          invoice.invoicePending = true;
+          invoice.invoiceDraft = false;
+        }
+      });
     },
   },
   actions: {
@@ -91,6 +114,23 @@ export default createStore({
     async DELETE_INVOICE_DB({ commit }, docId) {
       await deleteDoc(doc(db, "invoices", docId));
       commit("DELETE_INVOICE", docId);
+    },
+    async UPDATE_STATUS_TO_PAID({ commit }, docId) {
+      const updateRef = doc(db, "invoices", docId);
+      await updateDoc(updateRef, {
+        invoicePaid: true,
+        invoicePending: false,
+      });
+      commit("UPDATE_STATUS_TO_PAID", docId);
+    },
+    async UPDATE_STATUS_TO_PENDING({ commit }, docId) {
+      const updateRef = doc(db, "invoices", docId);
+      await updateDoc(updateRef, {
+        invoicePaid: false,
+        invoicePending: true,
+        invoiceDraft: false,
+      });
+      commit("UPDATE_STATUS_TO_PENDING", docId);
     },
   },
   modules: {},
